@@ -1,0 +1,2 @@
+INSERT INTO `club_management`.`club` (`ClubID`, `ClubName`, `Description`, `Advisor`) VALUES ('1', 'Aatmatrisha', 'Fest Commitee', 'Mr A');
+INSERT INTO `club_management`.`club` (`ClubID`, `ClubName`, `Description`, `Advisor`) VALUES ('2', 'PES Innovation Lab', 'Research and Development', 'Mr B');
