@@ -228,51 +228,24 @@ app.post("/login",(req,res)=>{
 
 
 
-app.get('/:userId/meetings', async (req, res) => {
-  const userId = req.params.userId;
-  
-  console.log(req.body)
-
-  try {
-    // Fetch meetings based on the user's club memberships
-    const query = `
-      SELECT meetings.Meeting_ID, meetings.Date_Time, meetings.Agenda, meetings.Club_ID
-      FROM meetings
-      INNER JOIN club ON meetings.Club_ID = club.clubid
-      INNER JOIN Club_User ON club.clubid = Club_User.ClubID
-      WHERE Club_User.User_ID = ?;
-    `;
-
-    const meetings = await queryAsync(query, [userId]);
-    console.log('in here', meetings)
-    res.json(meetings);
-  } catch (error) {
-    console.error("Error fetching meetings:", error);
-    res.status(500).json({ message: 'Error fetching meetings' });
-  }
-});
-
 app.post('/:userId/meetings', async (req, res) => {
   const userId = req.params.userId;
-  const { agenda } = req.body;
-  
+  const { agenda, date_time } = req.body;
 
   try {
     // Fetch the first club ID associated with the user
     const clubQuery = 'SELECT ClubID FROM Club_User WHERE User_ID = ? LIMIT 1';
     const [clubResult] = await queryAsync(clubQuery, [userId]);
-    console.log('bef', clubResult)
-    if (!clubResult) {
-      console.log('In backend', clubResult, clubResult[0])
 
+    if (!clubResult) {
       return res.status(404).json({ message: 'User is not part of any clubs' });
     }
+
     const clubId = clubResult.ClubID;
 
-
     // Use the dynamically obtained club ID in the INSERT query
-    const meetingQuery = 'INSERT INTO meetings (Date_Time, Agenda, Club_ID) VALUES (NOW(), ?, ?)';
-    await queryAsync(meetingQuery, [agenda, clubId]);
+    const meetingQuery = 'INSERT INTO meetings (Date_Time, Agenda, Club_ID) VALUES (?, ?, ?)';
+    await queryAsync(meetingQuery, [date_time, agenda, clubId]);
 
     res.json({ message: 'Meeting created successfully' });
   } catch (error) {
@@ -282,21 +255,23 @@ app.post('/:userId/meetings', async (req, res) => {
 });
 
 
+
 app.put('/:userId/meetings/:meetingId', async (req, res) => {
   const userId = req.params.userId;
   const meetingId = req.params.meetingId;
-  const { agenda } = req.body;
+  const { agenda, date_time } = req.body;
 
   try {
     // For simplicity, let's assume the user can only update their own meetings
-    const query = 'UPDATE meetings SET Agenda = ? WHERE Meeting_ID = ? AND Club_ID IN (SELECT ClubID FROM Club_User WHERE User_ID = ?)';
-    await queryAsync(query, [agenda, meetingId, userId]);
+    const query = 'UPDATE meetings SET Agenda = ?, Date_Time = ? WHERE Meeting_ID = ? AND Club_ID IN (SELECT ClubID FROM Club_User WHERE User_ID = ?)';
+    await queryAsync(query, [agenda, date_time, meetingId, userId]);
     res.json({ message: 'Meeting updated successfully' });
   } catch (error) {
     console.error("Error updating meeting:", error);
     res.status(500).json({ message: 'Error updating meeting' });
   }
 });
+
 
 app.delete('/:userId/meetings/:meetingId', async (req, res) => {
   const userId = req.params.userId;
