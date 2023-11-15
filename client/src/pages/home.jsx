@@ -2,9 +2,11 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import { useNavigate, useParams } from 'react-router-dom';
 
+// ... (existing imports and setup code)
+
 const Home = () => {
   const { userId } = useParams();
-  console.log(userId)
+
   const containerStyle = {
     textAlign: 'center',
     padding: '20px',
@@ -12,7 +14,7 @@ const Home = () => {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    backgroundImage: 'url("/download.jpg")',
+    background: 'url("/image.webp") center center / cover no-repeat',
     backgroundSize: 'cover',
     color: '#fff',
   };
@@ -33,6 +35,7 @@ const Home = () => {
 
   const buttonContainerStyle = {
     display: 'flex',
+    flexDirection: 'row', // Change to row
     justifyContent: 'space-around',
     alignItems: 'center',
     flex: 1,
@@ -73,6 +76,10 @@ const Home = () => {
             Clubs
           </Link>
 
+          <Link to={`/${userId}/user_clubs`} style={buttonStyle} onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(211, 84, 0, 0.8)'} onMouseOut={(e) => e.target.style.backgroundColor = 'rgba(230, 126, 34, 0.8)'}>
+            User Clubs
+          </Link>
+
           <Link to="/events" style={buttonStyle} onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(211, 84, 0, 0.8)'} onMouseOut={(e) => e.target.style.backgroundColor = 'rgba(230, 126, 34, 0.8)'}>
             Events
           </Link>
@@ -80,13 +87,13 @@ const Home = () => {
           <Link to="/announcements" style={buttonStyle} onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(211, 84, 0, 0.8)'} onMouseOut={(e) => e.target.style.backgroundColor = 'rgba(230, 126, 34, 0.8)'}>
             Announcements
           </Link>
-
-          <Link to={`/${userId}/meetings`} style={buttonStyle} onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(211, 84, 0, 0.8)'} onMouseOut={(e) => e.target.style.backgroundColor = 'rgba(230, 126, 34, 0.8)'}>
-  Meetings
-</Link>
         </div>
 
         <div style={buttonColumnStyle}>
+          <Link to={`/${userId}/meetings`} style={buttonStyle} onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(211, 84, 0, 0.8)'} onMouseOut={(e) => e.target.style.backgroundColor = 'rgba(230, 126, 34, 0.8)'}>
+            Meetings
+          </Link>
+
           <Link to="/recruitments" style={buttonStyle} onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(211, 84, 0, 0.8)'} onMouseOut={(e) => e.target.style.backgroundColor = 'rgba(230, 126, 34, 0.8)'}>
             Recruitments!
           </Link>

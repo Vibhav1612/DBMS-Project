@@ -226,6 +226,18 @@ app.post("/login",(req,res)=>{
   );
 });
 
+app.get('/:userId/meetings', async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const response = await queryAsync('SELECT * FROM meetings WHERE Club_ID IN (SELECT ClubID FROM Club_User WHERE User_ID = ?)', [userId]);
+    res.json(response);
+  } catch (error) {
+    console.error("Error fetching meetings:", error);
+    res.status(500).json({ message: 'Error fetching meetings' });
+  }
+});
+
+
 
 
 app.post('/:userId/meetings', async (req, res) => {
@@ -234,8 +246,10 @@ app.post('/:userId/meetings', async (req, res) => {
 
   try {
     // Fetch the first club ID associated with the user
+    console.log('here')
     const clubQuery = 'SELECT ClubID FROM Club_User WHERE User_ID = ? LIMIT 1';
     const [clubResult] = await queryAsync(clubQuery, [userId]);
+    console.log(clubResult)
 
     if (!clubResult) {
       return res.status(404).json({ message: 'User is not part of any clubs' });
@@ -260,6 +274,8 @@ app.put('/:userId/meetings/:meetingId', async (req, res) => {
   const userId = req.params.userId;
   const meetingId = req.params.meetingId;
   const { agenda, date_time } = req.body;
+
+  console.log(agenda, date_time)
 
   try {
     // For simplicity, let's assume the user can only update their own meetings
@@ -287,6 +303,22 @@ app.delete('/:userId/meetings/:meetingId', async (req, res) => {
     res.status(500).json({ message: 'Error deleting meeting' });
   }
 });
+
+app.get('/:userId/user_clubs', (req, res) => {
+  const userId = req.params.userId;
+
+  console.log(userId);
+
+  const query = 'CALL GetUserClubs(?)';
+
+  db.query(query, [userId], (err, data) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching user clubs', error: err });
+    }
+    return res.json(data[0]); // Assuming the result is in the first element of the data array
+  });
+});
+
 
 // ... (other routes remain unchanged)
 

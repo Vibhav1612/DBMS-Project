@@ -45,7 +45,7 @@ const Event = () => {
             <br />
             <span style={{ fontSize: "14px" }}>Date/Time: {formatDateTime(event.Date_Time)}</span>
             <br />
-            <span style={{ fontSize: "14px" }}>Club ID: {event.Club_ID}</span>
+      
           </div>
         ))}
       </div>

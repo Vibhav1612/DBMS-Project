@@ -47,7 +47,7 @@ function Register() {
       } else {
         setLoginStatus(response.data[0].email);
         // Redirect to '/' after successful login
-        navigate('/');
+        // navigate(`/${userId}`);
       }
     });
   };
