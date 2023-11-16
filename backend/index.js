@@ -206,25 +206,30 @@ app.post("/:userId/register_clubs", async (req, res) => {
 
 
 
-app.post("/login",(req,res)=>{
-  const username=req.body.username;
-  const password=req.body.password;
+app.post("/login", (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
 
-  db.query("SELECT * FROM users WHERE email = ? AND password = ?",
-  [username,password],
-  (err,result)=>{
-    if(err){
-    res.send({err:err})
-    }
-
-    if(result.length > 0){
-      res.send(result);
-    }else{
-      res.send({message:"Wrong username/password!"});
+  db.query(
+    "SELECT user_id FROM users WHERE email = ? AND password = ?",
+    [username, password],
+    (err, result) => {
+      if (err) {
+        res.status(500).json({ message: "Error during login", error: err });
+      } else {
+        if (result.length > 0) {
+          console.log(result)
+          const userId = result[0].user_id;
+          console.log(userId)
+          res.status(200).json({ userId, message: "Login successful" });
+        } else {
+          res.status(401).json({ message: "Wrong username/password!" });
+        }
       }
     }
   );
 });
+
 
 app.get('/:userId/meetings', async (req, res) => {
   const userId = req.params.userId;

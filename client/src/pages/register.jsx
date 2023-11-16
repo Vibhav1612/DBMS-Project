@@ -38,19 +38,28 @@ function Register() {
   
 
   const login = () => {
-    axios.post('http://localhost:4400/register', {
+    
+    axios.post('http://localhost:4400/login', {
       username: usernameLogin,
       password: passwordLogin,
+      
     }).then((response) => {
-      if (response.data.message) {
+      if (!response.data.message) {
         setLoginStatus(response.data.message);
       } else {
-        setLoginStatus(response.data[0].email);
-        // Redirect to '/' after successful login
-        // navigate(`/${userId}`);
+       
+        setLoginStatus("Login successful");
+        const userId = response.data.userId;
+  
+        // Redirect to '/userId' after successful login
+        console.log(userId)
+        navigate(`/${userId}`);
       }
+    }).catch((error) => {
+      console.error("Error during login:", error);
     });
   };
+  
 
   return (
     <div className="App">
