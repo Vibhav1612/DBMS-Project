@@ -1,5 +1,0 @@
-npm init -y
-npm i express mysql nodemon
-npx create-react-app .
-npm i react-router-dom
-npm i axios
